@@ -38,7 +38,7 @@ Future<DataModel> submitData(String cusMobNo, String cusId) async {
 
   var myJson = jsonDecode(data);
 
-  // print(myJson["message"]);
+  print(myJson["message"]);
 
 
 

@@ -8,6 +8,7 @@ import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 import 'package:my_app/AboutUs.dart';
 import 'package:my_app/DetailsPage.dart';
 import 'package:my_app/HelperFile.dart';
+import 'package:http/http.dart' as http;
 
 class HomePage extends StatefulWidget {
   final String? cusMobNo;
@@ -70,40 +71,62 @@ class _HomePageState extends State<HomePage> {
                           MaterialPageRoute(builder: (context) => Login()));
                     },
                     child: Text("OK")),
-                TextButton(onPressed: () {
-                  Navigator.pop(context);
-                }, child: Text("Cancel"))
+                TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text("Cancel"))
               ],
             ));
   }
+
+  Future<void> _futureIdRefresh() async {
+    print("Home Paga refreshed");
+    _updateIDs(widget.cusId, widget.cusMobNo);
+
+    return Future.delayed(Duration(seconds: 10));
+  }
+
+  void _updateIDs(String? cusId, String? cusMobNo) async {
+    var response = await http
+        .post(Uri.http(HelperFile.rootURL, HelperFile.loginPath), body: {
+      "cusMobNo": cusMobNo,
+      "cusId": cusId,
+    });
+
+    var data = response.body;
+
+    var da = jsonEncode(jsonDecode(data)["message"]);
+    // print(da);
+    orderIds = jsonDecode(da.toString());
+
+    setState(() {
+      orderIds = jsonDecode(da.toString());
+    });
+
+    print(orderIds);
+  }
+
+  List orderIds = [];
 
   @override
   Widget build(BuildContext context) {
     // {cusId: cus-10657, cusMobNo: 9876543245}  //  login to home -> datas
 
-    List getOrderIds() {
-      print("*-*-*-*-*-*-*-*-*-*-*-*-*-*-*");
+    @override
+    void initState() {
+      super.initState();
 
-      print(widget.cusId);
-      print(widget.cusMobNo);
+      setState(() {
+        orderIds = jsonDecode(widget.userData.toString());
+      });
 
-      var jn = jsonDecode(widget.userData.toString());
-      print(jn["message"]);
 
-      print("*-*-*-*-*-*-*-*-*-*-*-*-*-*-*");
-
-      return jn["message"];
+      print(orderIds);
+      _updateIDs(widget.cusId, widget.cusMobNo);
     }
 
     String ordId = "";
-
-    // void testMeth () {
-
-    //   var root = jsonDecode(widget.userData.toString());
-
-    //   var perOrderJson = {};
-    //   // perOrderJson["cusMobNo"] = root
-    // }
 
     return Scaffold(
       backgroundColor: Color(HelperFile.bgColor),
@@ -180,42 +203,47 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
           Expanded(
-            child: ListView.builder(
-              itemCount: getOrderIds().length,
-              itemBuilder: (context, index) {
-                return Container(
-                  margin: EdgeInsets.all(5),
-                  width: double.infinity,
-                  height: 75,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(colors: [
-                      Colors.red.shade600,
-                      Colors.red.shade300,
-                    ]),
-                    borderRadius: BorderRadius.all(Radius.circular(5)),
-                  ),
-                  child: Card(
-                      child: TextButton(
-                    onPressed: () {
-                      setState(() {
-                        ordId = getOrderIds()[index];
-                      });
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => DetailsPage(
-                              cusMobNo: widget.cusMobNo,
-                              cusId: widget.cusId,
-                              orderID: ordId)));
-                    },
-                    child: Text(
-                      getOrderIds()[index],
-                      style: TextStyle(
-                          color: Color(HelperFile.appColor),
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18),
-                    ),
-                  )),
-                );
+            child: RefreshIndicator(
+              onRefresh: () async {
+                _futureIdRefresh();
               },
+              child: ListView.builder(
+                itemCount: orderIds.length,
+                itemBuilder: (context, index) {
+                  return Container(
+                    margin: EdgeInsets.all(5),
+                    width: double.infinity,
+                    height: 75,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(colors: [
+                        Colors.red.shade600,
+                        Colors.red.shade300,
+                      ]),
+                      borderRadius: BorderRadius.all(Radius.circular(5)),
+                    ),
+                    child: Card(
+                        child: TextButton(
+                      onPressed: () {
+                        setState(() {
+                          ordId = orderIds[index];
+                        });
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => DetailsPage(
+                                cusMobNo: widget.cusMobNo,
+                                cusId: widget.cusId,
+                                orderID: ordId)));
+                      },
+                      child: Text(
+                        orderIds[index],
+                        style: TextStyle(
+                            color: Color(HelperFile.appColor),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18),
+                      ),
+                    )),
+                  );
+                },
+              ),
             ),
           ),
           Text(
@@ -246,7 +274,6 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: Color(HelperFile.appColor),
         onPressed: () {
           showCallDialog(context);
-          // getOrderIds();
         },
         tooltip: "Need Helps?",
         elevation: 10,
