@@ -1,13 +1,59 @@
+import 'package:ShivaneDesigning/HelperFile.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class AboutUs extends StatelessWidget {
-  const AboutUs({ Key? key }) : super(key: key);
+class AboutUs extends StatefulWidget {
+  const AboutUs({Key? key}) : super(key: key);
+
+  @override
+  _AboutUsState createState() => _AboutUsState();
+}
+
+void helpmeOutThis () async {
+    final SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+
+    print("init_about");
+        print(sharedPreferences.getString(HelperFile.prefUserPass).toString());
+    print("state_about");
+}
+
+class _AboutUsState extends State<AboutUs> {
+  String textDood = "hello";
+
+  @override
+  void initState() {
+    super.initState();
+
+   helpmeOutThis();
+  }
+
+
+  @override
+  void dispose() {
+    print("dispo_about???");
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("About Us"),),
-      body: Center(child: Text("No Data Found :/"),),
+      appBar: AppBar(
+        title: Text("About Us"),
+      ),
+      body: Center(
+        child: Column(
+          children: [
+            Text(textDood),
+            TextButton(
+                onPressed: () {
+                  setState(() {
+                    textDood = "Hola Flutter !";
+                  });
+                },
+                child: Text("Hit me Flutter Devz")),
+          ],
+        ),
+      ),
     );
   }
 }

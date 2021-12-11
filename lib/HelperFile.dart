@@ -1,10 +1,23 @@
 class HelperFile {
   
+
   static const int appColor = 0xff2c206c;
   static const int bgColor = 0xFFFEF1E6;
 
   static const int salwarColor = 0xff6F69AC;
   static const int blouseColor = 0xffFD6F96;
+
+  static const String smFB = "https://www.facebook.com/shivanesboutique/";
+  static const String smIn = "https://www.instagram.com/shivanesboutique/";
+  static const String smYt = "https://www.youtube.com/c/ShivanesBoutique";
+  static const String smTw = "https://twitter.com/Hemakumaran3";
+
+
+  // SharedPreferenceKeys
+  static const String prefUserPhone = "PHKEY";
+  static const String prefUserPass = "PSKEY";
+
+  static const  String mapURL = "https://www.google.com/maps/dir//Shivane's+Boutique+17,+Trivandrum+Rd+near+Alagar+Jewellers,+Murugankurichi,+Palayamkottai+Tirunelveli,+Tamil+Nadu+627002/@8.7171134,77.8279051,11z/data=!4m8!4m7!1m0!1m5!1m1!1s0x3b0411f651731ccd:0x8ad08487b1b65bbe!2m2!1d77.7304773!2d8.7261176";
 
 
   static const String rootURL= "13.234.126.183:3002";

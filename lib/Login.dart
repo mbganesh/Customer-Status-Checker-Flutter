@@ -2,10 +2,11 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-import 'package:my_app/HomePage.dart';
+import 'package:ShivaneDesigning/HomePage.dart';
 import 'DataModel.dart';
 import 'HelperFile.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -15,19 +16,17 @@ class Login extends StatefulWidget {
 }
 
 bool? isValidUser;
-String data = "" ;
+String data = "";
 
 String userData = "";
-
-
 
 // user info
 String no = "";
 String id = "";
 
 Future<DataModel> submitData(String cusMobNo, String cusId) async {
-  var response =
-      await http.post(Uri.http(HelperFile.rootURL, HelperFile.loginPath), body: {
+  var response = await http
+      .post(Uri.http(HelperFile.rootURL, HelperFile.loginPath), body: {
     "cusMobNo": cusMobNo,
     "cusId": cusId,
   });
@@ -38,10 +37,7 @@ Future<DataModel> submitData(String cusMobNo, String cusId) async {
 
   var myJson = jsonDecode(data);
 
-  print(myJson["message"]);
-
-
-
+  // print(myJson["message"]);
 
   if (myJson["success"] == true) {
     // print(myJson["message"]);
@@ -53,26 +49,24 @@ Future<DataModel> submitData(String cusMobNo, String cusId) async {
     isValidUser = false;
   }
 
+  // print("---------------");
+  // print(data);
+  // print("---------------");
 
-  print("---------------");
-  print(data);
-  print("---------------");
-
-  var passtohome = {} ;
+  var passtohome = {};
   passtohome["cusId"] = cusId.toString();
   passtohome["cusMobNo"] = cusMobNo.toString();
   // passtohome["orderID"] = myJson["message"];
 
   // data = jsonDecode(passtohome.toString()).toString();
 
-  userData =  passtohome.toString();
+  userData = passtohome.toString();
 
-print("**************************************");
+  // print("**************************************");
   // print(userData);
 
   userData = jsonEncode(data);
-print("**************************************");
-
+  // print("**************************************");
 
   return dataModelFromJson(data);
 }
@@ -84,6 +78,9 @@ class _LoginState extends State<Login> {
   TextEditingController passWordController = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
+
+
+  bool _passwordVisible = true;
 
   @override
   Widget build(BuildContext context) {
@@ -170,7 +167,7 @@ class _LoginState extends State<Login> {
                       child: TextFormField(
                         controller: passWordController,
                         maxLines: 1,
-                        obscureText: true,
+                        obscureText: _passwordVisible,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return "Please Enter your Password.";
@@ -179,6 +176,19 @@ class _LoginState extends State<Login> {
                           }
                         },
                         decoration: InputDecoration(
+                            suffixIcon: IconButton(
+                              onPressed: () {
+                                  setState(() {
+                                    _passwordVisible = !_passwordVisible;
+                                  });
+                              },
+                              icon: Icon(
+                                _passwordVisible
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
+                                color: Color(HelperFile.appColor),
+                              ),
+                            ),
                             border: OutlineInputBorder(),
                             labelStyle:
                                 TextStyle(color: Color(HelperFile.appColor)),
@@ -210,7 +220,7 @@ class _LoginState extends State<Login> {
                           String ph = phenoNoController.text;
                           String ps = passWordController.text;
 
-                          no = ph ;
+                          no = ph;
                           id = ps;
 
                           DataModel model = await submitData(ph, ps);
@@ -220,10 +230,21 @@ class _LoginState extends State<Login> {
                           });
 
                           if (isValidUser == true) {
+
+                            final SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+                            sharedPreferences.setString(HelperFile.prefUserPhone, phenoNoController.text);
+                            sharedPreferences.setString(HelperFile.prefUserPass, passWordController.text);
+
+                            print("sharPref Value : "+ sharedPreferences.getString(HelperFile.prefUserPhone).toString() );
+
+
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => HomePage(cusMobNo:no , cusId: id , userData:data)));
+                                    builder: (context) => HomePage(
+                                        cusMobNo: no,
+                                        cusId: id,
+                                        userData: data)));
                           } else {
                             final err = "Invalid UserName and PassWord";
                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(

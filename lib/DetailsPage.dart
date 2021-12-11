@@ -2,8 +2,8 @@ import 'dart:convert';
 import 'dart:typed_data';
 import 'package:intl/intl.dart'; // for date convertor
 import 'package:flutter/material.dart';
-import 'package:my_app/HelperFile.dart';
-import 'package:my_app/OrderModel.dart';
+import 'package:ShivaneDesigning/HelperFile.dart';
+import 'package:ShivaneDesigning/OrderModel.dart';
 import 'package:http/http.dart' as http;
 
 class DetailsPage extends StatefulWidget {
@@ -36,7 +36,7 @@ class _DetailsPageState extends State<DetailsPage> {
 
     jsonObj = jsonDecode(response.body);
 
-// print(user["message"][0]["salwarData"].length);
+print(jsonObj["message"][0]["salwarData"].length);
 
     return orderModelFromJson(response.body);
   }
@@ -81,12 +81,10 @@ class _DetailsPageState extends State<DetailsPage> {
     });
   }
 
-  Future<void> _futureRefresher () async {
-      print("Paga refreshed");
+  Future<void> _futureRefresher() async {
+    print("Paga refreshed");
     initStep();
-    return Future.delayed(
-      Duration(seconds: 5)
-    );
+    return Future.delayed(Duration(seconds: 5));
   }
 
   @override
@@ -98,7 +96,7 @@ class _DetailsPageState extends State<DetailsPage> {
           title: Text("Order Details"),
         ),
         body: RefreshIndicator(
-          onRefresh: () async{
+          onRefresh: () async {
             _futureRefresher();
           },
           child: Center(
@@ -434,72 +432,86 @@ class _DetailsPageState extends State<DetailsPage> {
                           itemCount: int.parse(
                               jsonObj["message"][0]["salwarCount"].toString()),
                           itemBuilder: (context, index) {
-                            return Container(
-                              margin: EdgeInsets.all(10),
-                              child: Card(
-                                child: Column(
-                                  children: [
-                                    Card(
-                                      child: Padding(
-                                        padding: EdgeInsets.all(10),
-                                        child: Text(jsonObj["message"][0]
-                                                    ["salwarData"][index]
-                                                ["salwarOrderId"]
-                                            .toString()),
+                            if (int.parse(jsonObj["message"][0]["salwarCount"]
+                                    .toString()) ==
+                                0) {
+                                  
+                              return Container(
+                                child: Text("no data"),
+                              );
+
+                            } else {
+                              return Container(
+                                margin: EdgeInsets.all(10),
+                                child: Card(
+                                  child: Column(
+                                    children: [
+                                      Card(
+                                        child: Padding(
+                                          padding: EdgeInsets.all(10),
+                                          child: Text(jsonObj["message"][0]
+                                                      ["salwarData"][index]
+                                                  ["salwarOrderId"]
+                                              .toString()),
+                                        ),
                                       ),
-                                    ),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceAround,
-                                      children: [
-                                        SizedBox(
-                                            width: 150,
-                                            height: 150,
-                                            child: Column(
-                                              children: [
-                                                Center(
-                                                  child: Padding(
-                                                    padding: EdgeInsets.all(5),
-                                                    child: Text("Dress Image"),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceAround,
+                                        children: [
+                                          SizedBox(
+                                              width: 150,
+                                              height: 150,
+                                              child: Column(
+                                                children: [
+                                                  Center(
+                                                    child: Padding(
+                                                      padding:
+                                                          EdgeInsets.all(5),
+                                                      child:
+                                                          Text("Dress Image"),
+                                                    ),
                                                   ),
-                                                ),
-                                                Image.memory(
-                                                  getImageView(jsonObj[
-                                                                  "message"][0]
-                                                              ["salwarData"]
-                                                          [index]["dressImage"]
-                                                      .toString()),
-                                                ),
-                                              ],
-                                            )),
-                                        SizedBox(
-                                            width: 150,
-                                            height: 150,
-                                            child: Column(
-                                              children: [
-                                                Center(
-                                                  child: Padding(
-                                                    padding: EdgeInsets.all(5),
-                                                    child:
-                                                        Text("Stitched Image"),
+                                                  Image.memory(
+                                                    getImageView(jsonObj[
+                                                                    "message"][
+                                                                0]["salwarData"]
+                                                            [
+                                                            index]["dressImage"]
+                                                        .toString()),
                                                   ),
-                                                ),
-                                                Image.memory(
-                                                  getImageView(jsonObj["message"]
-                                                                      [0]
-                                                                  ["salwarData"]
-                                                              [index]
-                                                          ["stichedDressImage"]
-                                                      .toString()),
-                                                ),
-                                              ],
-                                            )),
-                                      ],
-                                    )
-                                  ],
+                                                ],
+                                              )),
+                                          SizedBox(
+                                              width: 150,
+                                              height: 150,
+                                              child: Column(
+                                                children: [
+                                                  Center(
+                                                    child: Padding(
+                                                      padding:
+                                                          EdgeInsets.all(5),
+                                                      child: Text(
+                                                          "Stitched Image"),
+                                                    ),
+                                                  ),
+                                                  Image.memory(
+                                                    getImageView(jsonObj["message"]
+                                                                        [0][
+                                                                    "salwarData"]
+                                                                [index][
+                                                            "stichedDressImage"]
+                                                        .toString()),
+                                                  ),
+                                                ],
+                                              )),
+                                        ],
+                                      )
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            );
+                              );
+                            }
                           },
                         ),
 

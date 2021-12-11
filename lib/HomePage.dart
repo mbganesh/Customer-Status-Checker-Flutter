@@ -1,14 +1,14 @@
 import 'dart:convert';
-import 'package:my_app/DataModel.dart';
-import 'package:my_app/Login.dart';
+import 'package:ShivaneDesigning/Login.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart' as launcher;
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
-import 'package:my_app/AboutUs.dart';
-import 'package:my_app/DetailsPage.dart';
-import 'package:my_app/HelperFile.dart';
+import 'package:ShivaneDesigning/AboutUs.dart';
+import 'package:ShivaneDesigning/DetailsPage.dart';
+import 'package:ShivaneDesigning/HelperFile.dart';
 import 'package:http/http.dart' as http;
+import 'package:package_info_plus/package_info_plus.dart';
 
 class HomePage extends StatefulWidget {
   final String? cusMobNo;
@@ -46,7 +46,7 @@ class _HomePageState extends State<HomePage> {
               actions: [
                 TextButton(
                     onPressed: () {
-                      FlutterPhoneDirectCaller.callNumber("9702470579");
+                      FlutterPhoneDirectCaller.callNumber("9585501762");
                     },
                     child: Text("ok")),
                 TextButton(
@@ -80,50 +80,115 @@ class _HomePageState extends State<HomePage> {
             ));
   }
 
+  Future showContactUsDialog(BuildContext context) async {
+    return showDialog(
+        context: context,
+        builder: (_) => new AlertDialog(
+              title: new Text("Contact Us"),
+              content: new Text(
+                  "Komala Creation\n4, Chinnakoil, Murugankurichi\nTirunelveli - 627002"),
+              actions: [
+                TextButton(
+                    onPressed: () {
+                      launcher.launch(HelperFile.mapURL);
+                    },
+                    child: Text("Map")),
+                TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text("Ok"))
+              ],
+            ));
+  }
+
+  Future showAppInfoDialog(BuildContext context) async {
+    return showDialog(
+        context: context,
+        builder: (_) => new AlertDialog(
+              title: new Text("App Info"),
+              content: new Text("Shivane Designing\n" + versionCode),
+              actions: [
+                TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text("Ok"))
+              ],
+            ));
+  }
+
   Future<void> _futureIdRefresh() async {
+
+    print("//////////////////////");
+    _tempSharef();
+    print("//////////////////////");
+
     print("Home Paga refreshed");
     _updateIDs(widget.cusId, widget.cusMobNo);
-
     return Future.delayed(Duration(seconds: 10));
   }
 
   void _updateIDs(String? cusId, String? cusMobNo) async {
+    print("_updateIDs");
     var response = await http
         .post(Uri.http(HelperFile.rootURL, HelperFile.loginPath), body: {
       "cusMobNo": cusMobNo,
       "cusId": cusId,
     });
-
     var data = response.body;
-
     var da = jsonEncode(jsonDecode(data)["message"]);
-    // print(da);
-    orderIds = jsonDecode(da.toString());
-
     setState(() {
       orderIds = jsonDecode(da.toString());
     });
-
-    print(orderIds);
   }
 
   List orderIds = [];
+  String versionCode = "";
+
+  void _tempSharef() async {
+    print("||||||||||||||||||||||||");
+
+        final SharedPreferences sharedPreferences =
+        await SharedPreferences.getInstance();
+    print(sharedPreferences.getString(HelperFile.prefUserPass).toString() +
+        "cxcxccxcxxccx");
+
+print("||||||||||||||||||||||||");
+  }
 
   @override
   Widget build(BuildContext context) {
     // {cusId: cus-10657, cusMobNo: 9876543245}  //  login to home -> datas
 
+    PackageInfo.fromPlatform().then((PackageInfo packageInfo) {
+      // String appName = packageInfo.appName;
+      // String packageName = packageInfo.packageName;
+      // String version = packageInfo.version;
+      // String buildNumber = packageInfo.buildNumber;
+      versionCode = "Version Code : " +
+          packageInfo.version +
+          "\n" +
+          "Build Number : " +
+          packageInfo.buildNumber;
+    });
+
     @override
     void initState() {
       super.initState();
-
+      print("InitState: called");
       setState(() {
         orderIds = jsonDecode(widget.userData.toString());
       });
+      // print(orderIds);
+      // print("orderIdsPRO");
+    }
 
-
-      print(orderIds);
-      _updateIDs(widget.cusId, widget.cusMobNo);
+    @override
+    void didUpdateWidget(HomePage homePage) {
+      print("did");
+      super.didUpdateWidget(homePage);
+      print("updated");
     }
 
     String ordId = "";
@@ -145,32 +210,53 @@ class _HomePageState extends State<HomePage> {
             ListTile(
               title: Text("Contact Us"),
               leading: Icon(Icons.contact_mail),
+              onTap: () {
+                showContactUsDialog(context);
+              },
             ),
             ListTile(
               title: Text("App Info"),
               leading: Icon(Icons.info),
+              onTap: () {
+                showAppInfoDialog(context);
+              },
             ),
             Text("Website"),
             ListTile(
               title: Text("Online Shopping"),
               leading: Icon(Icons.web),
+              onTap: () {
+                launcher.launch("https://shivanesboutique.com/");
+              },
             ),
             Text("Social Touch"),
             ListTile(
               title: Text("Facebook"),
               leading: Icon(Icons.facebook),
+              onTap: () {
+                launcher.launch(HelperFile.smFB);
+              },
             ),
             ListTile(
               title: Text("Instagram"),
               leading: Icon(Icons.facebook_outlined),
+              onTap: () {
+                launcher.launch(HelperFile.smIn);
+              },
             ),
             ListTile(
               title: Text("Youtube"),
               leading: Icon(Icons.youtube_searched_for_outlined),
+              onTap: () {
+                launcher.launch(HelperFile.smYt);
+              },
             ),
             ListTile(
               title: Text("Twitter"),
               leading: Icon(Icons.assignment),
+              onTap: () {
+                launcher.launch(HelperFile.smTw);
+              },
             ),
             Text("Exit"),
             ListTile(
@@ -185,40 +271,49 @@ class _HomePageState extends State<HomePage> {
       ),
       appBar: AppBar(
         backgroundColor: Color(HelperFile.appColor),
-        title: Text("Home Page"),
+        title: Image.asset(
+          "assets/white_logo.png",
+          width: 150,
+          height: 50,
+        ),
       ),
-      body: Column(
-        children: [
-          Center(
-            child: Padding(
-              padding: EdgeInsets.all(25),
+      body: RefreshIndicator(
+        onRefresh: () async {
+          _futureIdRefresh();
+        },
+        child: Column(
+          children: [
+            Container(
+              margin: EdgeInsets.only(left: 25, right: 25, top: 10, bottom: 10),
+              decoration: BoxDecoration(
+                color: Color(HelperFile.appColor),
+                borderRadius: BorderRadius.all(Radius.circular(5)),
+              ),
               child: Center(
-                  child: Text(
-                "My Orders",
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
+                child: Padding(
+                  padding: EdgeInsets.all(10),
+                  child: Center(
+                      child: Text(
+                    "My Orders",
+                    style: TextStyle(
+                      fontSize: 20,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  )),
                 ),
-              )),
+              ),
             ),
-          ),
-          Expanded(
-            child: RefreshIndicator(
-              onRefresh: () async {
-                _futureIdRefresh();
-              },
+            Expanded(
               child: ListView.builder(
                 itemCount: orderIds.length,
                 itemBuilder: (context, index) {
                   return Container(
                     margin: EdgeInsets.all(5),
                     width: double.infinity,
-                    height: 75,
+                    height: 50,
                     decoration: BoxDecoration(
-                      gradient: LinearGradient(colors: [
-                        Colors.red.shade600,
-                        Colors.red.shade300,
-                      ]),
+                      color: Color(HelperFile.appColor),
                       borderRadius: BorderRadius.all(Radius.circular(5)),
                     ),
                     child: Card(
@@ -245,30 +340,26 @@ class _HomePageState extends State<HomePage> {
                 },
               ),
             ),
-          ),
-          Text(
-            "POWER BY",
-            style: TextStyle(
-              fontSize: 10,
-              fontWeight: FontWeight.bold,
-              color: Colors.blue,
+            Text(
+              "POWER BY",
+              style: TextStyle(
+                fontSize: 10,
+                fontWeight: FontWeight.bold,
+                color: Color(HelperFile.appColor),
+              ),
             ),
-          ),
-          TextButton(
-            child: Text(
-              "Netcom Computers Pvt Ltd",
-              style: TextStyle(fontSize: 9),
+            TextButton(
+              child: Text(
+                "Netcom Computers Pvt Ltd",
+                style: TextStyle(fontSize: 9),
+              ),
+              onPressed: () {
+                launcher.launch("https://netcomcomputersindia.com/",
+                    forceWebView: true);
+              },
             ),
-            onPressed: () {
-              launcher.launch("https://netcomcomputersindia.com/",
-                  forceWebView: true);
-            },
-            // style: TextStyle(
-            //   fontWeight: FontWeight.bold,
-            //   color: Colors.blue,
-            // ),
-          ),
-        ],
+          ],
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Color(HelperFile.appColor),

@@ -1,4 +1,4 @@
-name: my_app
+name: ShivaneDesigning
 description: A new Flutter project.
 
 # The following line prevents the package from being accidentally published to
@@ -32,10 +32,12 @@ dependencies:
     sdk: flutter
   lottie:
   animated_splash_screen:
-  # url_launcher not works for me :/ so.
+  # url_launcher works for social media links and online shopping link.
   url_launcher:
   flutter_phone_direct_caller: ^2.1.0
   intl: ^0.17.0
+  package_info_plus:
+  shared_preferences: ^2.0.11
 
 
   # The following adds the Cupertino Icons font to your application.
