@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:ShivaneDesigning/Login.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart' as launcher;
 import 'package:flutter/material.dart';
@@ -119,7 +120,6 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _futureIdRefresh() async {
-
     print("//////////////////////");
     _tempSharef();
     print("//////////////////////");
@@ -149,12 +149,12 @@ class _HomePageState extends State<HomePage> {
   void _tempSharef() async {
     print("||||||||||||||||||||||||");
 
-        final SharedPreferences sharedPreferences =
+    final SharedPreferences sharedPreferences =
         await SharedPreferences.getInstance();
     print(sharedPreferences.getString(HelperFile.prefUserPass).toString() +
         "cxcxccxcxxccx");
 
-print("||||||||||||||||||||||||");
+    print("||||||||||||||||||||||||");
   }
 
   @override
@@ -201,7 +201,12 @@ print("||||||||||||||||||||||||");
             Image.asset('assets/logo.png'),
             ListTile(
               title: Text("About Us"),
-              leading: Icon(Icons.home),
+                leading: SvgPicture.asset(
+                'assets/ic_about_us.xml',
+                width: 25,
+                height: 25,
+                // color: Color(HelperFile.appColor),
+              ),
               onTap: () {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => AboutUs()));
@@ -232,33 +237,53 @@ print("||||||||||||||||||||||||");
             Text("Social Touch"),
             ListTile(
               title: Text("Facebook"),
-              leading: Icon(Icons.facebook),
+                 leading: SvgPicture.asset(
+                'assets/facebook.svg',
+                width: 25,
+                height: 25,
+                color: Color(HelperFile.appColor),
+              ),
               onTap: () {
                 launcher.launch(HelperFile.smFB);
               },
             ),
             ListTile(
               title: Text("Instagram"),
-              leading: Icon(Icons.facebook_outlined),
+               leading: SvgPicture.asset(
+                'assets/facebook.svg',
+                width: 25,
+                height: 25,
+                color: Color(HelperFile.appColor),
+              ),
               onTap: () {
                 launcher.launch(HelperFile.smIn);
               },
             ),
             ListTile(
               title: Text("Youtube"),
-              leading: Icon(Icons.youtube_searched_for_outlined),
+              leading: SvgPicture.asset(
+                'assets/youtube.svg',
+                width: 25,
+                height: 25,
+                color: Color(HelperFile.appColor),
+              ),
               onTap: () {
                 launcher.launch(HelperFile.smYt);
               },
             ),
             ListTile(
               title: Text("Twitter"),
-              leading: Icon(Icons.assignment),
+             leading: SvgPicture.asset(
+                'assets/twitter.svg',
+                width: 25,
+                height: 25,
+                color: Color(HelperFile.appColor),
+              ),
               onTap: () {
                 launcher.launch(HelperFile.smTw);
               },
             ),
-            Text("Exit"),
+          Padding(padding: EdgeInsets.all(5),child:   Text("Exit"),),
             ListTile(
               title: Text("SignOut"),
               leading: Icon(Icons.logout),
@@ -341,7 +366,7 @@ print("||||||||||||||||||||||||");
               ),
             ),
             Text(
-              "POWER BY",
+              "POWERED BY",
               style: TextStyle(
                 fontSize: 10,
                 fontWeight: FontWeight.bold,
@@ -351,7 +376,7 @@ print("||||||||||||||||||||||||");
             TextButton(
               child: Text(
                 "Netcom Computers Pvt Ltd",
-                style: TextStyle(fontSize: 9),
+                style: TextStyle(fontSize: 9, color: Colors.black),
               ),
               onPressed: () {
                 launcher.launch("https://netcomcomputersindia.com/",

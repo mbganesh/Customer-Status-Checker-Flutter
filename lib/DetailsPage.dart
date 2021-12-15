@@ -581,7 +581,11 @@ print(jsonObj["message"][0]["salwarData"].length);
                                                             Text("Dress Image"),
                                                       ),
                                                     ),
-                                                    Image.memory(
+                                                    InkWell(
+                                                      onTap: () {
+                                                        print("***CLICKED***");
+                                                      },
+                                                      child: Image.memory(
                                                       getImageView(jsonObj[
                                                                       "message"]
                                                                   [
@@ -589,7 +593,9 @@ print(jsonObj["message"][0]["salwarData"].length);
                                                               [
                                                               index]["dressImage"]
                                                           .toString()),
+                                                          
                                                     ),
+                                                    )
                                                   ],
                                                 )),
                                             SizedBox(
