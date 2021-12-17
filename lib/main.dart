@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:ShivaneDesigning/HelperFile.dart';
 import 'package:ShivaneDesigning/HomePage.dart';
+import 'package:ShivaneDesigning/TempImage.dart';
 import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:ShivaneDesigning/FurureDemo.dart';
@@ -74,6 +75,7 @@ class _MyAppState extends State<MyApp> {
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      // home: TempImage(),
       home: AnimatedSplashScreen(
         splash: Scaffold(
           body: Center(

@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
+import 'package:ShivaneDesigning/ViewImage.dart';
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:intl/intl.dart'; // for date convertor
 import 'package:flutter/material.dart';
 import 'package:ShivaneDesigning/HelperFile.dart';
@@ -36,7 +38,7 @@ class _DetailsPageState extends State<DetailsPage> {
 
     jsonObj = jsonDecode(response.body);
 
-print(jsonObj["message"][0]["salwarData"].length);
+    print(jsonObj["message"][0]["salwarData"].length);
 
     return orderModelFromJson(response.body);
   }
@@ -49,7 +51,12 @@ print(jsonObj["message"][0]["salwarData"].length);
     return myDate;
   }
 
-  Uint8List getImageView(String uri) {
+  Uint8List getDressImageView(String uri) {
+    print(uri);
+    //  final UriData? data = Uri.parse(uri).data ;
+    // // isSitValid = data?.isBase64 ?? false;
+    // // print(isSitValid);
+    // return data!.contentAsBytes();
     Uint8List _bytes;
 
     try {
@@ -57,14 +64,54 @@ print(jsonObj["message"][0]["salwarData"].length);
       print(_bytes.toString());
       return _bytes;
     } on Exception catch (exception) {
-      print(HelperFile.no_image);
-      _bytes = base64.decode(HelperFile.no_image.split(',').last);
-      print(_bytes.toString());
-      return _bytes;
+      print("Im just Exception");
+      final UriData? data = Uri.parse(HelperFile.no_image).data;
+      return data!.contentAsBytes();
+
+      // print(HelperFile.no_image);
+      // _bytes = base64.decode(HelperFile.no_image.split(',').last);
+      // print(_bytes.toString());
+      // return _bytes;
     } catch (e) {
-      _bytes = base64.decode(HelperFile.no_image.split(',').last);
+      print("Im just E");
+      final UriData? data = Uri.parse(HelperFile.no_image).data;
+      return data!.contentAsBytes();
+
+      // _bytes = base64.decode(HelperFile.no_image.split(',').last);
+      // print(_bytes.toString());
+      // return _bytes;
+    }
+  }
+
+  Uint8List getStichedImageView(String uri) {
+    print(uri);
+    //  final UriData? data = Uri.parse(uri).data ;
+    // // isSitValid = data?.isBase64 ?? false;
+    // // print(isSitValid);
+    // return data!.contentAsBytes();
+    Uint8List _bytes;
+
+    try {
+      _bytes = base64.decode(uri.split(',').last);
       print(_bytes.toString());
       return _bytes;
+    } on Exception catch (exception) {
+      print("Im just Exception");
+      final UriData? data = Uri.parse(HelperFile.no_image).data;
+      return data!.contentAsBytes();
+
+      // print(HelperFile.no_image);
+      // _bytes = base64.decode(HelperFile.no_image.split(',').last);
+      // print(_bytes.toString());
+      // return _bytes;
+    } catch (e) {
+      print("Im just E");
+      final UriData? data = Uri.parse(HelperFile.no_image).data;
+      return data!.contentAsBytes();
+
+      // _bytes = base64.decode(HelperFile.no_image.split(',').last);
+      // print(_bytes.toString());
+      // return _bytes;
     }
   }
 
@@ -435,11 +482,9 @@ print(jsonObj["message"][0]["salwarData"].length);
                             if (int.parse(jsonObj["message"][0]["salwarCount"]
                                     .toString()) ==
                                 0) {
-                                  
                               return Container(
                                 child: Text("no data"),
                               );
-
                             } else {
                               return Container(
                                 margin: EdgeInsets.all(10),
@@ -472,13 +517,33 @@ print(jsonObj["message"][0]["salwarData"].length);
                                                           Text("Dress Image"),
                                                     ),
                                                   ),
-                                                  Image.memory(
-                                                    getImageView(jsonObj[
-                                                                    "message"][
-                                                                0]["salwarData"]
-                                                            [
-                                                            index]["dressImage"]
-                                                        .toString()),
+                                                  Hero(
+                                                    tag: "salwar",
+                                                    child: InkWell(
+                                                      onTap: () {
+                                                        Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                                builder: (_) =>
+                                                                    ViewImage(
+                                                                        image:
+                                                                            getDressImageView(
+                                                                      jsonObj["message"][0]["salwarData"]
+                                                                              [
+                                                                              index]
+                                                                          [
+                                                                          "dressImage"],
+                                                                    ))));
+                                                      },
+                                                      child: Image.memory(
+                                                        getDressImageView(
+                                                            jsonObj["message"][0]
+                                                                            ["salwarData"]
+                                                                        [index][
+                                                                    "dressImage"]
+                                                                .toString()),
+                                                      ),
+                                                    ),
                                                   ),
                                                 ],
                                               )),
@@ -495,13 +560,34 @@ print(jsonObj["message"][0]["salwarData"].length);
                                                           "Stitched Image"),
                                                     ),
                                                   ),
-                                                  Image.memory(
-                                                    getImageView(jsonObj["message"]
-                                                                        [0][
-                                                                    "salwarData"]
-                                                                [index][
-                                                            "stichedDressImage"]
-                                                        .toString()),
+                                                  Hero(
+                                                    tag: "blouse",
+                                                    child: InkWell(
+                                                      onTap: () {
+                                                        Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                                builder: (_) =>
+                                                                    ViewImage(
+                                                                        image:
+                                                                            getStichedImageView(
+                                                                      jsonObj["message"][0]["salwarData"]
+                                                                              [
+                                                                              index]
+                                                                          [
+                                                                          "stichedDressImage"],
+                                                                    ))));
+                                                      },
+                                                      child: Image.memory(
+                                                        getStichedImageView(
+                                                            jsonObj["message"][0]
+                                                                            [
+                                                                            "salwarData"]
+                                                                        [index][
+                                                                    "stichedDressImage"]
+                                                                .toString()),
+                                                      ),
+                                                    ),
                                                   ),
                                                 ],
                                               )),
@@ -581,20 +667,38 @@ print(jsonObj["message"][0]["salwarData"].length);
                                                             Text("Dress Image"),
                                                       ),
                                                     ),
-                                                    InkWell(
-                                                      onTap: () {
-                                                        print("***CLICKED***");
-                                                      },
-                                                      child: Image.memory(
-                                                      getImageView(jsonObj[
-                                                                      "message"]
-                                                                  [
-                                                                  0]["blouseData"]
-                                                              [
-                                                              index]["dressImage"]
-                                                          .toString()),
-                                                          
-                                                    ),
+                                                    Hero(
+                                                      tag: "blouse_dress" +
+                                                          jsonObj["message"][0][
+                                                                      "blouseData"]
+                                                                  [index]
+                                                              ["blouseOrderId"],
+                                                      child: InkWell(
+                                                        onTap: () {
+                                                          Navigator.push(
+                                                              context,
+                                                              MaterialPageRoute(
+                                                                  builder: (_) =>
+                                                                      ViewImage(
+                                                                          image:
+                                                                              getDressImageView(
+                                                                        jsonObj["message"][0]["blouseData"][index]
+                                                                            [
+                                                                            "dressImage"],
+                                                                      ))));
+                                                        },
+                                                        child: Image.memory(
+                                                          getDressImageView(
+                                                              jsonObj["message"][0]
+                                                                              [
+                                                                              "blouseData"]
+                                                                          [
+                                                                          index]
+                                                                      [
+                                                                      "dressImage"]
+                                                                  .toString()),
+                                                        ),
+                                                      ),
                                                     )
                                                   ],
                                                 )),
@@ -611,13 +715,38 @@ print(jsonObj["message"][0]["salwarData"].length);
                                                             "Stitched Image"),
                                                       ),
                                                     ),
-                                                    Image.memory(
-                                                      getImageView(jsonObj["message"]
-                                                                          [0][
+                                                    Hero(
+                                                      tag: "blouse_stiched" +
+                                                          jsonObj["message"][0][
                                                                       "blouseData"]
-                                                                  [index][
-                                                              "stichedDressImage"]
-                                                          .toString()),
+                                                                  [index]
+                                                              ["blouseOrderId"],
+                                                      child: InkWell(
+                                                        onTap: () {
+                                                          Navigator.push(
+                                                              context,
+                                                              MaterialPageRoute(
+                                                                  builder: (_) =>
+                                                                      ViewImage(
+                                                                          image:
+                                                                              getStichedImageView(
+                                                                        jsonObj["message"][0]["blouseData"][index]
+                                                                            [
+                                                                            "stichedDressImage"],
+                                                                      ))));
+                                                        },
+                                                        child: Image.memory(
+                                                          getStichedImageView(
+                                                              jsonObj["message"][0]
+                                                                              [
+                                                                              "blouseData"]
+                                                                          [
+                                                                          index]
+                                                                      [
+                                                                      "stichedDressImage"]
+                                                                  .toString()),
+                                                        ),
+                                                      ),
                                                     ),
                                                   ],
                                                 )),
@@ -665,7 +794,7 @@ print(jsonObj["message"][0]["salwarData"].length);
                     ),
                   );
                 } else {
-                  return CircularProgressIndicator();
+                  return CircularProgressIndicator(); // AnimatedTextKit( isRepeatingAnimation: true, animatedTexts: [ WavyAnimatedText("Loading...") ], )
                 }
               },
             ),

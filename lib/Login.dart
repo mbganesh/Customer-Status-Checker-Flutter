@@ -79,7 +79,6 @@ class _LoginState extends State<Login> {
 
   final _formKey = GlobalKey<FormState>();
 
-
   bool _passwordVisible = true;
 
   @override
@@ -138,6 +137,7 @@ class _LoginState extends State<Login> {
                   Container(
                       margin: EdgeInsets.only(left: 25.0, right: 25.0),
                       child: TextFormField(
+                        textInputAction: TextInputAction.next,
                         controller: phenoNoController,
                         maxLength: 10,
                         maxLines: 1,
@@ -165,6 +165,7 @@ class _LoginState extends State<Login> {
                   Container(
                       margin: EdgeInsets.only(left: 25.0, right: 25.0),
                       child: TextFormField(
+                        textInputAction: TextInputAction.done,
                         controller: passWordController,
                         maxLines: 1,
                         obscureText: _passwordVisible,
@@ -178,9 +179,9 @@ class _LoginState extends State<Login> {
                         decoration: InputDecoration(
                             suffixIcon: IconButton(
                               onPressed: () {
-                                  setState(() {
-                                    _passwordVisible = !_passwordVisible;
-                                  });
+                                setState(() {
+                                  _passwordVisible = !_passwordVisible;
+                                });
                               },
                               icon: Icon(
                                 _passwordVisible
@@ -230,13 +231,18 @@ class _LoginState extends State<Login> {
                           });
 
                           if (isValidUser == true) {
+                            final SharedPreferences sharedPreferences =
+                                await SharedPreferences.getInstance();
+                            sharedPreferences.setString(
+                                HelperFile.prefUserPhone,
+                                phenoNoController.text);
+                            sharedPreferences.setString(HelperFile.prefUserPass,
+                                passWordController.text);
 
-                            final SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-                            sharedPreferences.setString(HelperFile.prefUserPhone, phenoNoController.text);
-                            sharedPreferences.setString(HelperFile.prefUserPass, passWordController.text);
-
-                            print("sharPref Value : "+ sharedPreferences.getString(HelperFile.prefUserPhone).toString() );
-
+                            print("sharPref Value : " +
+                                sharedPreferences
+                                    .getString(HelperFile.prefUserPhone)
+                                    .toString());
 
                             Navigator.push(
                                 context,

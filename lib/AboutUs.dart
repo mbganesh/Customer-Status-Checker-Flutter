@@ -1,4 +1,5 @@
 import 'package:ShivaneDesigning/HelperFile.dart';
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -46,6 +47,7 @@ class _AboutUsState extends State<AboutUs> {
   @override
   void dispose() {
     print("dispo_about???");
+    controller!.dispose();
     super.dispose();
   }
 
@@ -68,7 +70,12 @@ class _AboutUsState extends State<AboutUs> {
                     child: VideoPlayer(controller!),
                   )
                 : Center(
-                    child: CircularProgressIndicator(),
+                    child: AnimatedTextKit(
+                      animatedTexts: [
+                        WavyAnimatedText("Loading...")
+                      ],
+                      isRepeatingAnimation: true,
+                    ),
                   ),
           ),
 
