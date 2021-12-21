@@ -143,6 +143,13 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+
+  @override
+  void initState() {
+    super.initState();
+     _updateIDs(widget.cusId, widget.cusMobNo);
+  }
+
   List orderIds = [];
   String versionCode = "";
 
@@ -173,16 +180,16 @@ class _HomePageState extends State<HomePage> {
           packageInfo.buildNumber;
     });
 
-    @override
-    void initState() {
-      super.initState();
-      print("InitState: called");
-      setState(() {
-        orderIds = jsonDecode(widget.userData.toString());
-      });
-      // print(orderIds);
-      // print("orderIdsPRO");
-    }
+    // @override
+    // void initState() {
+    //   super.initState();
+    //   print("InitState: called");
+    //   setState(() {
+    //     orderIds = jsonDecode(widget.userData.toString());
+    //   });
+    //   // print(orderIds);
+    //   // print("orderIdsPRO");
+    // }
 
     @override
     void didUpdateWidget(HomePage homePage) {

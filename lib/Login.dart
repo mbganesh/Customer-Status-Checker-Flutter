@@ -50,7 +50,7 @@ Future<DataModel> submitData(String cusMobNo, String cusId) async {
   }
 
   // print("---------------");
-  // print(data);
+  print(data);
   // print("---------------");
 
   var passtohome = {};
